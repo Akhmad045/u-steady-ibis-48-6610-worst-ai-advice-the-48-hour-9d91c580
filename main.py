@@ -27,6 +27,12 @@ def main():
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "wb") as fh:
         fh.write(raw)
+    # Round-trip check: the file on disk must be byte-exact, one line,
+    # and still inside the 1-140 character gate.
+    with open("/output/entry.txt", "rb") as fh:
+        written = fh.read()
+    assert written == raw, "written file differs from the line"
+    assert written.decode("utf-8").splitlines() == [text]
     print(f"Wrote {len(text)}-character ({len(raw)}-byte) entry to /output/entry.txt")
 
 
